@@ -1,0 +1,28 @@
+
+html,
+body,
+#root {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  position: relative;
+}
+
+.loader {
+  position: absolute;
+  height: 100%;
+  background-color: black;
+}
+
+.text {
+  margin: 21px;
+  color: white;
+  white-space: nowrap;
+  mix-blend-mode: difference;
+}
