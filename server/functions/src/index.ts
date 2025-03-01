@@ -1,19 +1,29 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-import {onRequest} from "firebase-functions/v2/https";
+import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+import * as admin from "firebase-admin";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+admin.initializeApp();
+const db = admin.firestore();
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export const getUsers = onRequest(async (_req, res) => {
+    try {
+        const snapshot = await db.collection("users").get();
+        let users: { id: string; }[] = [];
+
+        snapshot.forEach(doc => {
+            users.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (users.length === 0) {
+            logger.info("No users found.");
+            res.json(null);
+            return;
+        }
+
+        logger.info("Fetched users:", { count: users.length });
+        res.json(users);
+    } catch (error) {
+        logger.error("Error fetching users:", { error });
+        res.status(500).send("Internal Server Error");
+    }
+});
