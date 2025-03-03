@@ -1,12 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation"; // Correct import for navigation in App Directory
 import { motion, useAnimate } from "framer-motion"; // Import necessary Framer Motion components
 import "./styles.css"; // Import your styles
 
 const Home = () => {
+  const fetchUserCount = async () => {
+    const response = await fetch("http://localhost:5001/vision-board-4ab0b/us-central1/getUsersCount");
+    const data = await response.json();
+    console.log("User count:", data.count);
+};
+
   const [scope, animate] = useAnimate();
   const router = useRouter(); // useRouter hook to handle navigation
 
