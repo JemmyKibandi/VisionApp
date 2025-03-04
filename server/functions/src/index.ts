@@ -5,25 +5,15 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 const db = admin.firestore();
 
-export const getUsers = onRequest(async (_req, res) => {
+export const getUsersCount = onRequest(async (_req, res) => {
     try {
         const snapshot = await db.collection("users").get();
-        let users: { id: string; }[] = [];
+        const userCount = snapshot.size; // Get the number of users
 
-        snapshot.forEach(doc => {
-            users.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (users.length === 0) {
-            logger.info("No users found.");
-            res.json(null);
-            return;
-        }
-
-        logger.info("Fetched users:", { count: users.length });
-        res.json(users);
+        logger.info("User count:", { count: userCount });
+        res.json({ count: userCount }); // Return just the count
     } catch (error) {
-        logger.error("Error fetching users:", { error });
+        logger.error("Error fetching user count:", { error });
         res.status(500).send("Internal Server Error");
     }
 });
